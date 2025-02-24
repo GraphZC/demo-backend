@@ -6,6 +6,7 @@ import (
 
 	"github.com/GraphZC/demo-backend/config"
 	"github.com/GraphZC/demo-backend/requests"
+	"github.com/GraphZC/demo-backend/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -37,7 +38,7 @@ func main() {
 			})
 		}
 
-		if req.Password != configs.SecretPassword {
+		if !utils.StringCompare(req.Password, configs.SecretPassword) {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"error": "Invalid secret",
 			})
