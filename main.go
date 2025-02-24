@@ -14,6 +14,15 @@ func main() {
 
 	e := echo.New()
 
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set("Access-Control-Allow-Origin", "*")
+			c.Response().Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+			c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			return next(c)
+		}
+	})
+
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, echo.Map{
 			"message": "Backend is running",
@@ -28,7 +37,7 @@ func main() {
 			})
 		}
 
-		if req.Secret != configs.SecretPassword {
+		if req.Password != configs.SecretPassword {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"error": "Invalid secret",
 			})
